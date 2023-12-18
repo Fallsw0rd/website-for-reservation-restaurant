@@ -1,0 +1,133 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Рестораны{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'main/css/restaurants.css' %}">{% endblock %}
+
+{% block content %}
+<!--Поиск-->
+<section class="search">
+    <div class="container-search-map">
+        <div class="container-search">
+            <form class="main-search-wrapper" method="get" action="{% url 'search' %}">
+                <input class="search-item" type="search" name="q"
+                       placeholder="Поиск по названию, типу или кухни ресторана" value="{{ q }}">
+                <button type="submit" class="main-search-icon">
+                    <img src="{% static 'main/img/content/search-icon.png' %}" alt="">
+                </button>
+            </form>
+            <form class="selects" method="get" action="{% url 'restaurants' %}">
+                <div class="select-menu">
+                    <div class="select-btn">
+                        <span class="sBtn-text selected-option">Фильтры</span>
+                        <i class="bx bx-chevron-down"></i>
+                    </div>
+                    <div class="options">
+                        <div id="kitchens" class="option">
+                            <span>{{ filter.form.kitchens.label }}</span>
+                            {{ filter.form.kitchens }}
+                        </div>
+                        <div id="average-check" class="option">
+                            <span>{{ filter.form.average_check.label }}</span>
+                            {{ filter.form.average_check }}
+                        </div>
+                        <div id="district" class="option">
+                            <span>{{ filter.form.district.label }}</span>
+                            {{ filter.form.district }}
+                        </div>
+                        <div id="features" class="option">
+                            <span>{{ filter.form.features.label }}</span>
+                            {{ filter.form.features }}
+                        </div>
+                        <button class="rest-button btn" type="submit">Применить фильтры</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="container-map">
+            <div class="map-btn" onclick="toggleMap()">Посмотреть на карте</div>
+            <div id="map"></div>
+            <div class="overlay" id="overlay"></div>
+        </div>
+    </div>
+</section>
+<!--/Поиск-->
+<section class="restaurants">
+    <div class="content-container">
+        <div class="main-line">
+            <h2 class="main-title">Рестораны и кафе</h2>
+            <div>
+                {% if restaurants|length > 99 %} 99+
+                {% else %}
+                    {{ restaurants|length }}
+                {% endif %}
+            </div>
+        </div>
+        <div class="content-wrapper">
+            {% if restaurants %}
+            <div class="content-block">
+                {% for rest in restaurants %}
+                <div class="content-item">
+                    <div class="content-content">
+                        <a href="{% url 'restaurants:profile-rest' name=rest.name pk=rest.pk %}">
+                            {% if rest.restaurant_image %}
+                            <img src="{{ rest.restaurant_image.url }}" alt="Restaurant Image">
+                            {% else %}
+                            <p>No image available</p>
+                            {% endif %}
+                        </a>
+                        <a class="content-reviews" href="{% url 'restaurants:profile-rest' name=rest.name pk=rest.pk %}#reviews">
+                            <img class="reviews-icon" src="{% static 'main/img/content/reviews-icon.png' %}" alt="">
+                            <p class="reviews-ingit">{{ rest.average_rating|default:"0,0" }}</p>
+                        </a>
+                    </div>
+                    <div class="rest-info">
+                        <a href="{% url 'restaurants:update' name=rest.name pk=rest.pk %}" class="rest-title">{{ rest.name }}</a>
+                        <p class="rest-info-text">{{ rest.address }}</p>
+                        <div class="rest-kitchen">
+                            <img class="kitchen-icon" src="{% static 'main/img/content/kitchen-icon.png' %}" alt="">
+                            <p class="kitchen-text">
+                                {% for kitchen in rest.kitchens.all %}
+                                {{ kitchen.name }}{% if not forloop.last %},{% endif %}
+                                {% endfor %} </p>
+                        </div>
+                        <p class="rest-info-text">Средний чек: {{ rest.min_average_check }}-{{ rest.max_average_check }}
+                            руб.</p>
+                        {% if rest.opening_time and rest.closing_time %}
+                        <p class="rest-info-text">Время работы: {{ rest.opening_time|time:"H:i" }} - {{ rest.closing_time|time:"H:i" }}</p>
+                        {% else %}
+                        <p class="rest-info-text">Время работы не указано</p>
+                        {% endif %}
+                    </div>
+                    <div class="rest-btn">
+                        <a class="rest-button" href="{% url 'restaurants:reservation' name=rest.name pk=rest.id %}">Забронировать</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %} <h3>По запросу {{ q }} Ресторанов нет.</h3>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+<script>
+    var restaurantsData = [
+            {% for restaurant in restaurants %}
+                {
+                    name: "{{ restaurant.name }}",
+                    district: "{{ restaurant.district }}",
+                    address: "{{ restaurant.address }}",
+                    profileUrl: "{% url 'restaurants:profile-rest' name=restaurant.name pk=restaurant.pk %}"
+                },
+            {% endfor %}
+        ];
+    console.log(restaurantsData);
+</script>
+<script src="{% static 'main/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'main/js/restaurants.js' %}"></script>
+{% endblock %}

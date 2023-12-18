@@ -1,0 +1,23 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+
+{% block title %}{{ publication.title }}{% endblock %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor/contents.css' %}">
+<link rel="stylesheet" href="{% static 'publication/publication.css' %}">
+{% endblock %}
+
+{% block content %}
+<!--О нас-->
+<section class="publication">
+    <div class="container-public">
+        <img class="img-public" src="{{ publication.photo.url }}">
+        <h2 class="title-SS">{{ publication.title }}</h2>
+    </div>
+    <div class="content-description">
+        {{ publication.description|safe }}
+    </div>
+</section>
+<!--О нас-->
+{% endblock %}

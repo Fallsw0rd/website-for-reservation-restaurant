@@ -1,0 +1,75 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load profile_filters %}
+
+{% block title %}{{ restaurant.name }} | Бронирования{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/list_tables.css' %}">
+{% endblock %}
+
+{% block content %}
+<table cellspacing="0">
+<h2>Бронирования</h2>
+    <tr>
+        <th>ФИО</th>
+        <th>Номер стола</th>
+        <th>Количество гостей</th>
+        <th>Время</th>
+        <th>Дата</th>
+        <th>Подтвердить</th>
+        <th>Отменен</th>
+    </tr>
+    {% for reserv in reservations %}
+    <tr>
+        <td class="user-info">{{ reserv.name }}</td>
+        <td>{{ reserv.table.number }}</td>
+        <td>{{ reserv.count_guess }}</td>
+        <td>{{ reserv.time }}</td>
+        <td>{{ reserv.date }}</td>
+        <td>
+            {% if reserv.is_accepted %}
+                <span style="color: green">Подтвержден</span>
+            {% else %}
+                {% if reserv.is_cancelled %}
+                    <span>Бронь отменена</span>
+                {% else %}
+                    {% csrf_token %}
+                    <button class="confirm-button" data-booking-id="{{ reserv.id }}">Подтвердить</button>
+                {% endif %}
+            {% endif %}
+        </td>
+        <td>
+            {% if reserv.is_cancelled %}
+                <span style="color: red;">Отменен</span>
+            {% else %}
+                {% if reserv.is_accepted %}
+                    <span>Отменить нельзя</span>
+                {% else %}
+                <span>Не отменен</span>
+                {% endif %}
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'main/js/jquery-3.7.1.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('.confirm-button').on('click', function () {
+            let bookingId = $(this).data('booking-id');
+            let csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                url: '/restaurants/confirm_reservation/' + bookingId + '/',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: csrfToken,
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/auth/profile.css' %}"> {% endblock %}
+
+{% block content %}
+<!--Личный кабинет-->
+<div class="lk">
+    <div class="container-lk" style="background-image: url({% static 'main/img/content/background-about.png' %});">
+        <div class="prof-img">
+            <h1 class="ava">Личный кабинет</h1>
+            <div id="avatar">
+                <img id="avatar-image"
+                     src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'main/img/content/lk-profile.svg' %}{% endif %}"
+                     alt="">
+            </div>
+
+            <form method="post" enctype="multipart/form-data" id="avatar-form">
+                {% csrf_token %}
+                {{ avatar_form.avatar }}
+                <button type="button" class="photo-upload-btn" id="change-avatar-btn">Изменить аватар</button>
+            </form>
+        </div>
+        <form method="post" enctype="multipart/form-data" class="rectangle-info">
+            {% csrf_token %}
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            <input type="email" id="{{ form.email.id_for_label }}" name="{{ form.email.name }}" readonly
+                   value="{{ form.email.value }}">
+            <label for="{{ form.surname.id_for_label }}">Фамилия:</label>
+            <input type="text" id="{{ form.surname.id_for_label }}" name="{{ form.surname.name }}" readonly
+                   value="{{ form.surname.value }}">
+            <label for="{{ form.name.id_for_label }}">Имя:</label>
+            <input type="text" id="{{ form.name.id_for_label }}" name="{{ form.name.name }}" readonly
+                   value="{{ form.name.value }}">
+            <label for="{{ form.middlename.id_for_label }}">Отчество:</label>
+            <input type="text" id="{{ form.middlename.id_for_label }}" name="{{ form.middlename.name }}"
+                   readonly value="{{ form.middlename.value }}">
+            <label for="{{ form.phone_number.id_for_label }}">Номер телефона:</label>
+            <input type="tel" id="{{ form.phone_number.id_for_label }}" name="{{ form.phone_number.name }}"
+                   readonly value="{{ form.phone_number.value }}">
+            <div class="change-info">
+                <button id='edit' class="btn-change" type="button">Редактировать</button>
+                <button id="confirm" class="btn-change" type="submit">Сохранить</button>
+                <a href="{% url 'logout'%}?next={{request.path}}" class="btn-change">Выйти</a>
+            </div>
+        </form>
+    </div>
+    <table cellspacing="0">
+        <tr>
+            <th>ФИО</th>
+            <th>Заведение</th>
+            <th>Номер стола</th>
+            <th>Количество гостей</th>
+            <th>Время</th>
+            <th class="sortable" data-sort-field="date">Дата</th>
+            <th>Статус</th>
+            <th>Действие</th>
+        </tr>
+        {% for reserv in reservations %}
+        <tr>
+            <td>{{ reserv.name }}</td>
+            <td>{{ reserv.table.restaurant.name }}</td>
+            <td>{{ reserv.table.number }}</td>
+            <td>{{ reserv.count_guess }}</td>
+            <td>{{ reserv.time }}</td>
+            <td>{{ reserv.date }}</td>
+            <td>
+                {% if reserv.is_cancelled %}
+                    <span style="color: red">Отменен</span>
+                {% else %}
+                    {% if reserv.is_accepted %}
+                        <span style='color: green;'>Подтвержден</span>
+                    {% else %}
+                        <span>В обработке</span>
+                    {% endif %}
+                {% endif %}
+            </td>
+            <td>
+                {% if reserv.is_accepted %}
+                    <span>Нельзя отменить</span>
+                {% else %}
+                    {% if reserv.is_cancelled %}
+                        <span>Действий нет</span>
+                    {% else %}
+                        {% csrf_token %}
+                        <button class="cancel-button" data-booking-id="{{ reserv.id }}">Отменить</button>
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<!--Личный кабинет-->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'main/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'js/profile.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('.cancel-button').on('click', function () {
+            let bookingId = $(this).data('booking-id');
+            let csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            $.ajax({
+                url: '/restaurants/cancel_reservation/' + bookingId + '/',
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: csrfToken,
+                },
+                success: function (data) {
+                    if (data.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert('Ошибка при отмене бронирования.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка при отправке запроса.');
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{%extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Авторизация{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/auth/login.css' %}"> {% endblock %}
+
+{% block content %}
+<div class="form">
+    <h2>Авторизация</h2>
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+        <div class="form-data">
+            <div class="form-label">
+                <label class="label-form">{{ field.label }}:</label>
+            </div>
+            <div class="form-form">{{ field }}</div>
+        </div>
+        {% endfor %}
+        <button class="submit-btn" type="submit">Войти</button>
+    </form>
+    <p class="or">Или</p>
+    <p class="question">У вас ещё нет аккаунта?
+        <a href="{% url 'registrations' %}" class="custom-button">Зарегистрироваться</a>
+    </p>
+</div>
+{% endblock %}

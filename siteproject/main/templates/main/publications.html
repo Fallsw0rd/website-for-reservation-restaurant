@@ -1,0 +1,51 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Публикации{% endblock %}
+
+{% block css %}<link rel="stylesheet" href="{% static 'main/css/publications.css' %}">{% endblock %}
+
+{% block content %}
+<!--Поиск-->
+<section class="search">
+    <div class="container-search-pub">
+        <div class="container-search">
+            <form class="main-search-wrapper" method="get" action="{% url 'search_pub' %}">
+                <input class="search-item" type="search" name="q"
+                       placeholder="Поиск по названию статьи" value="{{ q }}">
+                <button type="submit" class="main-search-icon">
+                    <img src="{% static 'main/img/content/search-icon.png' %}" alt="">
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+<!--/Поиск-->
+<!--Новости-->
+<section class="news">
+    <div class="content-container">
+        <h2 class="content-title">Публикации</h2>
+        <div class="content-wrapper">
+            {% if publications %}
+            <div class="content-block">
+                {% for pub in publications %}
+                <div class="content-item">
+                    <div class="content-content">
+                        <a href="{% url 'publications:publication' pk=pub.pk %}">
+                            <img src="{{ pub.photo.url }}" alt=""></a>
+                    </div>
+                    <div class="rest-info">
+                        <p class="date-create">{{ pub.publication_date }}</p>
+                        <a href="{% url 'publications:publication' pk=pub.pk %}" class="second-title">{{ pub.title }}</a>
+                        <p class="content-info-text">{{ pub.short_description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}<h3>По запросу {{ q }} Публикаций нет.</h3>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<!--/Новости-->
+{% endblock %}

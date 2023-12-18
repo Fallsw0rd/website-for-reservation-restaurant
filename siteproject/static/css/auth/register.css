@@ -1,0 +1,52 @@
+.form{
+    width: 424px;
+    margin: 50px auto 0;
+    background: #fff;
+    text-align: center;
+}
+h2{
+    margin-bottom: 20px;
+}
+
+input{
+    width: 400px;
+    padding: 10px;
+    border-radius: 7px;
+    background: rgba(176, 186, 195, 0.2);
+    color: #262729;
+    outline: none;
+}
+
+.form-form{
+    margin-bottom: 20px;
+}
+
+.form-label{
+    text-align: start;
+}
+.button-input{
+    border-radius: 7px;
+    background: #262729;
+    padding: 10px 75px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.custom-button {
+    color: var(--main-color);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+.or{
+    color: #262729;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 15px 0;
+}
+.question{
+    font-size: 14px;
+    font-weight: 400;
+}

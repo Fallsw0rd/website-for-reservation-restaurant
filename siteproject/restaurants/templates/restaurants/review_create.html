@@ -1,0 +1,30 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% block title %}Отзыв{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'restaurants/css/review_create.css' %}">{% endblock %}
+
+{% block content %}
+<div class="review">
+    <h2>Оставить отзыв для {{ restaurant.name }}</h2>
+    <form method="post" action="{% url 'restaurants:review' name=restaurant.name pk=restaurant.id %}">
+        {% csrf_token %}
+        <div id="reviews-form">
+            <div>
+                <p>{{ form.reviewer_name.label }}</p>
+                <p>{{ form.reviewer_name }}</p>
+            </div>
+            <div class="comment">
+                <p>{{ form.comment.label }}</p>
+                <p>{{ form.comment }}</p>
+            </div>
+            <div>
+                <p>{{ form.rating.label }}</p>
+                <p>{{ form.rating }}</p>
+            </div>
+        </div>
+        <button class="rest-button" type="submit">Оставить отзыв</button>
+    </form>
+</div>
+{% endblock %}

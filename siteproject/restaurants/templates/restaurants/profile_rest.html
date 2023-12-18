@@ -1,0 +1,141 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load profile_filters %}
+
+{% block title %}{{ restaurant.name }}{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/profile_rest.css' %}"> {% endblock %}
+
+{% block content %}
+<!--Профиль ресторана-->
+<div class="profile-rest">
+    <div class="back-rest">
+        <div class="background-img">
+            <img class="backg-img" src="{{ restaurant.restaurant_image.url }}">
+            <div class="back-rest-type">
+                <p>{{ restaurant.type }}</p>
+                <h2>{{ restaurant.name }}</h2>
+                <p>Рейтинг: {{ average_rating|default:"Нет оценок" }}</p>
+            </div>
+            {% if is_admin or request.user == restaurant.owner %}
+            <div class="back-rest-rect">
+                <div class="btn-cont">
+                    <a href="{% url 'restaurants:reservations' name=restaurant.name pk=restaurant.id %}" class="btn-bron">Бронирования</a>
+<!--                    <a href="#" class="btn-map">Редактор карты</a>-->
+                    <a href="{% url 'restaurants:update' name=restaurant.name pk=restaurant.id %}"
+                       class="btn-prof">Редактировать профиль</a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="back-rest-info">
+                <div class="about-rest">
+                    <p>{{ restaurant.contact_number|format_phone }}</p>
+                    <hr>
+                    <ul class="adr-quan-status">
+                        <li><p>{{ restaurant.address }}</p></li>
+                        <li><p>Количество столиков: {{ tables|length }}</p></li>
+                        <li><p>Статус: {% if restaurant.status %}Работает{% else %}Не работает{% endif %}</p></li>
+                    </ul>
+                    <a href="{% url 'restaurants:reservation' name=restaurant.name pk=restaurant.id %}">Забронировать</a>
+                </div>
+            </div>
+        </div>
+        <div class="info-rest">
+            <div class="photos">
+                <h1>Фотографии</h1>
+                <div class="img-gal">
+                    <img src="{{ restaurant.photo_1.url }}" onclick="openModal('{{ restaurant.photo_1.url }}')">
+                    <img src="{{ restaurant.photo_2.url }}" onclick="openModal('{{ restaurant.photo_2.url }}')">
+                    <img src="{{ restaurant.photo_3.url }}" onclick="openModal('{{ restaurant.photo_3.url }}')">
+                </div>
+            </div>
+            <div id="myModal" class="modal" onclick="closeModal()">
+                <img id="modalImg" src="">
+            </div>
+            <div class="main-block">
+                <div class="block-info">
+                    <div class="description">
+                        <h1>Описание</h1>
+                        <p>{{ restaurant.description }}</p>
+                    </div>
+                    <div class="cont-schedule">
+                        <ul class="schedule">
+                            <li><p id="day1">ПН {{ work_time.monday_opening_time|time:"H:i" }}
+                                {{ work_time.monday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day2">ВТ {{ work_time.tuesday_opening_time|time:"H:i" }}
+                                {{ work_time.tuesday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day3">СР {{ work_time.wednesday_opening_time|time:"H:i" }}
+                                {{ work_time.wednesday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day4">ЧТ {{ work_time.thursday_opening_time|time:"H:i" }}
+                                {{ work_time.thursday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day5">ПТ {{ work_time.friday_opening_time|time:"H:i" }}
+                                {{ work_time.friday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day6">СБ {{ work_time.saturday_opening_time|time:"H:i" }}
+                                {{ work_time.saturday_closing_time|time:"H:i" }}</p></li>
+                            <li><p id="day0">ВС {{ work_time.sunday_opening_time|time:"H:i" }}
+                                {{ work_time.sunday_closing_time|time:"H:i" }}</p></li>
+                        </ul>
+                    </div>
+                    <div class="purpose-and-peculiarities">
+                        <ul class="purpose">
+                            <li><h1>Цель посещения</h1></li>
+                            {% for purpose in restaurant.visit_purposes.all %}
+                            <li><p>{{ purpose.name }}</p></li>
+                            {% endfor %}
+                        </ul>
+                        <ul class="peculiarities">
+                            <li><h1>Особенности</h1></li>
+                            {% for feature in restaurant.features.all %}
+                            <li><p>{{ feature.name }}</p></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="reviews" id="reviews">
+                        <div class="reviews-title">
+                            <h1>Отзывы</h1>
+                            <div class="reviews-info">
+                                <span class="rating">Рейтинг: {{ average_rating|default:"0,0" }} / 5</span>
+                                <span>Всего отзывов: {{ reviews|length }}</span>
+                            </div>
+                        </div>
+                        <a class="review-create" href="{% url 'restaurants:review' name=restaurant.name pk=restaurant.id %}">Оставить отзыв</a>
+                        <div id="reviews-container">
+                            {% for review in reviews %}
+                                <div class="review-block">
+                                    <p>{{ review.user.avatar }}</p>
+                                    <p><strong>{{ review.reviewer_name }}</strong></p>
+                                    <p><em>{{ review.created_at }}</em></p>
+                                    <p>Оценка: {{ review.rating }}</p>
+                                    <hr>
+                                    <p>{{ review.comment }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="block-map">
+                    <div class="cont-geo">
+                        <h4>{{ restaurant.type }}</h4>
+                        <h2 id="name_rest">{{ restaurant.name }}</h2>
+                        <div id="map"></div>
+                        <a id="restaurantAddress"
+                           href="https://yandex.ru/maps/?text={{ restaurant.district }}, {{ restaurant.address }}"
+                           class="go_yandex_map" target="_blank"><i class='bx bxs-map'></i> {{ restaurant.address }}
+                        </a>
+                        <div id="district">{{ restaurant.district }}</div>
+                        <a class="reservation"
+                           href="{% url 'restaurants:reservation' name=restaurant.name pk=restaurant.id %}">Забронировать</a>
+                        <p>{{ restaurant.contact_number|format_phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--Профиль ресторана-->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'restaurants/js/profile_rest.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,30 @@
+#reviews-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 700px;
+    row-gap: 20px;
+    margin-top: 20px;
+}
+
+.comment {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 2;
+}
+
+.comment p textarea {
+    width: 100%;
+}
+
+.review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.rest-button{
+    border: none;
+    cursor: pointer;
+}

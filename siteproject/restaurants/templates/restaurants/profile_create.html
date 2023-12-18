@@ -1,0 +1,106 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% block title %}{{ form.name.value }} | Редактор профиля{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/profile_edit.css' %}"> {% endblock %}
+
+{% block content %}
+<!--Профиль ресторана-->
+<div class="profile-rest">
+    <form id="form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="info-rest">
+            <br>
+            <h2>Основная информация</h2>
+            <div class="info">
+                <div>
+                    <label>Название заведения</label>
+                    <p id="name">{{ form.name }}</p><br>
+                </div>
+                <div>
+                    <label>Адрес заведения</label>
+                    <p id="address">{{ form.address }}</p><br>
+                </div>
+                <div>
+                    <p>{{ form.contact_number.label }}</p>
+                    <p>{{ form.contact_number }}</p><br>
+                </div>
+                <div>
+                    <label>Тип заведения</label>
+                    <p id="type">{{ form.type }}</p><br>
+                </div>
+                <div class="box1">
+                    <p>{{ form.description.label }}</p>
+                    <p id="description">{{ form.description }}</p><br>
+                </div>
+                <div>
+                    <label>Средний чек</label>
+                    <p id="average-check">{{ form.min_average_check }}-{{ form.max_average_check }}</p><br>
+                </div>
+                <div>
+                    <label>Район в городе Казань</label>
+                    <p id="district">{{ form.district }}</p><br>
+                </div>
+                <div>
+                    <label>Особенности</label>
+                    <p id="features">{{ form.features }}</p><br>
+                </div>
+                <div>
+                    <label>Цель посещения</label>
+                    <p id="visit">{{ form.visit_purposes }}</p><br>
+                </div>
+                <div>
+                    <label>Кухня</label>
+                    <p id="kitchens">{{ form.kitchens }}</p>
+                </div>
+            </div>
+            <div class="back-rest">
+                <h2>Основная фотография</h2><br>
+                <div class="background-img">
+                    <img alt="" class="backg-img"
+                         id="preview-image-main"
+                         src="{% if form.restaurant_image.value %} /media/{{ form.restaurant_image.value }} {% endif %}">
+                </div>
+            </div>
+            {{ form.restaurant_image }}
+            <div class="photos">
+                <h1>Фотографии</h1>
+                <div class="img-gal">
+                    <img alt=""
+                         id="preview-image-1"
+                         src="{% if form.photo_1.value %} /media/{{ form.photo_1.value }} {% endif %}">
+                    <img alt=""
+                         id="preview-image-2"
+                         src="{% if form.photo_2.value %} /media/{{ form.photo_2.value }} {% endif %}">
+                    <img alt=""
+                         id="preview-image-3"
+                         src="{% if form.photo_3.value %} /media/{{ form.photo_3.value }} {% endif %}">
+                </div>
+                {{ form.photo_1 }}<hr>
+                {{ form.photo_2 }}<hr>
+                {{ form.photo_3 }}<hr>
+            </div>
+            <br>
+            <div class="cont-schedule">
+                <h2>Расписание</h2>
+                <ul class="schedule">
+                    <li><p>ПН {{ work_time_form.monday_opening_time}}-{{ work_time_form.monday_closing_time}}</p></li>
+                    <li><p>ВТ {{ work_time_form.tuesday_opening_time}}-{{ work_time_form.tuesday_closing_time}}</p></li>
+                    <li><p>СР {{ work_time_form.wednesday_opening_time}}-{{ work_time_form.wednesday_closing_time}}</p></li>
+                    <li><p>ЧТ {{ work_time_form.thursday_opening_time}}-{{ work_time_form.thursday_closing_time}}</p></li>
+                    <li><p>ПТ {{ work_time_form.friday_opening_time}}-{{ work_time_form.friday_closing_time}}</p></li>
+                    <li><p>СБ {{ work_time_form.saturday_opening_time}}-{{ work_time_form.saturday_closing_time}}</p></li>
+                    <li><p>ВС {{ work_time_form.sunday_opening_time}}-{{ work_time_form.sunday_closing_time}}</p></li>
+                </ul>
+            </div>
+        </div>
+        <input id="button" type="submit" value="Сохранить">
+    </form>
+</div>
+<!--Профиль ресторана-->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'restaurants/js/profile_create.js' %}"></script>
+{% endblock %}

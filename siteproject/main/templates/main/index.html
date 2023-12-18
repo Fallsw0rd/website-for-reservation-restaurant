@@ -1,0 +1,115 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<!--Интро-->
+<section class="intro">
+    <div class="container-content">
+        <div class="intro-wrapper">
+            <div class="img-item">
+                <img src="{% static 'main/img/content/intro-image-bg-1.png' %}" alt="">
+            </div>
+            <div class="img-item">
+                <img src="{% static 'main/img/content/intro-image-bg-2.png' %}" alt="">
+            </div>
+            <div class="img-item">
+                <img src="{% static 'main/img/content/intro-image-bg-3.png' %}" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+<!--/Интро-->
+
+<!--Поиск-->
+<section class="main-search">
+    <div class="main-container-search">
+        <form class="main-search-wrapper" method="get" action="{% url 'search' %}">
+            <input class="search-item" type="search" name="q"
+                   placeholder="Поиск по названию, типу или кухни ресторана" value="{{ q }}">
+            <button type="submit" class="main-search-icon">
+                <img src="{% static 'main/img/content/search-icon.png' %}" alt="">
+            </button>
+        </form>
+    </div>
+</section>
+<!--/Поиск-->
+
+<!--Рестораны-->
+<section class="popular-restaurant">
+    <div class="content-container">
+        <h2 class="main-title">Популярные рестораны</h2>
+        <div class="content-wrapper">
+            {% if popular_restaurants %}
+            <div class="content-block">
+                {% for rest in popular_restaurants %}
+                <div class="content-item">
+                    <div class="content-content">
+                        <a href="{% url 'restaurants:profile-rest' name=rest.name pk=rest.pk %}">
+                            {% if rest.restaurant_image %}
+                                <img src="{{ rest.restaurant_image.url }}" alt="Restaurant Image">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        </a>
+                        <a class="content-reviews" href="{% url 'restaurants:profile-rest' name=rest.name pk=rest.pk %}#reviews">
+                            <img class="reviews-icon" src="{% static 'main/img/content/reviews-icon.png' %}" alt="">
+                            <p class="reviews-ingit">{{ rest.average_rating|default:"0.0" }}</p>
+                        </a>
+                    </div>
+                    <div class="rest-info">
+                        <a href="{% url 'restaurants:update' name=rest.name pk=rest.pk %}" class="rest-title">{{ rest.name }}</a>
+                        <p class="rest-info-text">{{ rest.address }}</p>
+                        <div class="rest-kitchen">
+                            <img class="kitchen-icon" src="{% static 'main/img/content/kitchen-icon.png' %}" alt="">
+                            <p class="kitchen-text"> {% for kitchen in rest.kitchens.all %} {{ kitchen.name }}{% if not forloop.last %},{% endif %} {% endfor %} </p>
+                        </div>
+                        <p class="rest-info-text">Средний чек: {{ rest.min_average_check }}-{{ rest.max_average_check }} руб.</p>
+                        {% if rest.opening_time and rest.closing_time %}
+                        <p class="rest-info-text">Время работы: {{ rest.opening_time|time:"H:i" }} - {{ rest.closing_time|time:"H:i" }}</p>
+                        {% else %}
+                        <p class="rest-info-text">Время работы не указано</p>
+                        {% endif %}
+                    </div>
+                    <div class="rest-btn">
+                        <a class="rest-button" href="{% url 'restaurants:reservation' name=rest.name pk=rest.id %}">Забронировать</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %} <h3>Ресторанов нет.</h3>
+            {% endif %}
+        </div>
+    </div>
+</section>
+<!--/Рестораны-->
+
+<!--Новости-->
+<section class="news">
+    <div class="content-container">
+        <h2 class="content-title">Публикации</h2>
+        <div class="content-wrapper">
+            <div class="content-block">
+                {% if publications %}
+                {% for pub in publications %}
+                <div class="content-item">
+                    <div class="content-content">
+                        <a href="{% url 'publications:publication' pk=pub.pk %}">
+                            <img src="{{ pub.photo.url }}" alt=""></a>
+                    </div>
+                    <div class="rest-info">
+                        <p class="date-create">{{ pub.publication_date }}</p>
+                        <a href="{% url 'publications:publication' pk=pub.pk %}" class="second-title">{{ pub.title }}</a>
+                        <p class="content-info-text">{{ pub.short_description }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}<h3>Публикаций нет.</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!--/Новости-->
+{% endblock %}

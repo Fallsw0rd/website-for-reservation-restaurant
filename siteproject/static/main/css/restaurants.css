@@ -1,0 +1,180 @@
+/* search start */
+.container-search-map{
+    width: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 50px;
+}
+.container-search-map:last-child{
+    align-items: baseline;
+}
+
+.container-search{
+    display: block;
+}
+
+.container-map{
+    display: block;
+}
+
+.search-wrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 742px;
+    height: 62px;
+    border-radius: 40px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    background: #fff;
+}
+
+.search-icon{
+    height: 42px;
+    width: 42px;
+    margin-right: 67px;
+    border: none;
+    background: none;
+    outline: none!important;
+    cursor: pointer;
+}
+
+.search-icon img{
+    height: 42px;
+    width: 42px;
+}
+
+.sBtn-text{
+    margin: 0 15px 0 6px;
+}
+
+.selects{
+    margin-top: 12px;
+    display: flex;
+}
+
+.options{
+    display: none;
+}
+
+.select-menu .select-btn{
+    display: flex;
+    color: #262729;
+    font-size: 16px;
+    font-weight: 400;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.select-btn i{
+    font-size: 25px;
+    transition: .3s;
+}
+
+.select-menu.active .select-btn i:last-child{
+    transform: rotate(-180deg);
+}
+
+.select-menu .options{
+    position: absolute;
+    justify-content: space-between;
+    margin-top: 10px;
+    border-radius: 8px;
+    display: none;
+    background: #fff;
+    padding: 20px;
+    width: 730px;
+    border: 1px solid #262729;
+}
+
+.select-menu.active .options{
+    display: flex;
+    z-index: 2;
+}
+.rest-button.btn{
+    color: #fff;
+    background: var(--main-color);
+    border-radius: 12px;
+    width: 145px;
+    height: 40px;
+    transition: background 0.1s ease-in-out;
+    border: none;
+    margin: 0;
+}
+#kitchens{
+    max-width: 129px;
+}
+#average-check span{
+    width: 109px;
+}
+#district{
+}
+#features{
+    max-width: 192px;
+}
+.options .option{
+    display: flex;
+    flex-direction: column;
+    padding: 0 10px;
+}
+
+.map-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
+    font-weight: 600;
+    width: 231px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 9px 0;
+    border: 2px solid #262729;
+    border-radius: 70px;
+    background: #fff;
+    color: #262729;
+    transition: all .1s ease-in-out;
+}
+.map-btn:hover{
+    color: #fff;
+    background: #262729;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 1;
+}
+#map {
+    transition: opacity 0.5s ease;
+    opacity: 0;
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.restaurants{
+    margin-top: 50px;
+}
+.fade-in {
+    opacity: 1 !important;
+    display: block !important;
+}
+
+.fade-out {
+    opacity: 0 !important;
+    display: none !important;
+}
+[class*='ground-pane']{
+    filter: grayscale(1) invert(90%);
+}
+ /*search end*/

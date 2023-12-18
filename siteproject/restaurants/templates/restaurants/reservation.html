@@ -1,0 +1,97 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+
+{% block title %}Бронирование{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/reservation.css' %}"> {% endblock %}
+
+{% block content %}
+<!--Форма выбора стола-->
+<form id="bron-form" method="post">
+    <h1>Детали бронирования</h1>
+    <div class="tab">
+        <div class="steps">
+            <span class="step don"><p class="step__text">1</p></span>
+            <hr size="3">
+            <span class="step "><p class="step__text">2</p></span>
+        </div>
+        <h1 style="margin-bottom: 50px;">Выбор стола</h1>
+        <div class="form-date-time">
+            <a id='go-rest' data-rest='{{ restaurant.id }}' class="form-go-rest" href="{% url 'restaurants:profile-rest' name=restaurant.name pk=restaurant.pk %}">В профиль ресторана <<<</a>
+            <div>
+                {{ reservation_form.count_guess.label_tag }}
+                {{ reservation_form.count_guess }}
+                {{ reservation_form.date }}
+                {{ reservation_form.time }}
+            </div>
+        </div>
+        <div class="map-rest">
+            <div id="background-stop">Впишите количество человек для работы с картой ресторана</div>
+            <div id="reservation-message"></div>
+            <div id="myModal" class="modal" style="display: none; flex-direction: column; align-items: center;">
+                <div id="modalContent"></div>
+                <div class="btns-modal">
+                    <button type="button" id="nextBtn" onclick="nextPrev(1)" class="button">Далее</button>
+                    <button type='button' onclick="closeModal()">Закрыть</button>
+                </div>
+            </div>
+            <div class="toil-kit">
+                <div class="kitchen-container"></div>
+                <div class="toilet-container"></div>
+            </div>
+            <div class="tables">
+                {% for table in tables %}
+                <div class="table"
+                     data-capacity="{{ table.capacity }}"
+                     data-table="{{ table.pk }}"
+                     style="left: {{ table.x_in_map }}px; top: {{ table.y_in_map }}px;"
+                     onclick="openModal('{{ table.number }}', {{ table.pk }}, {{ table.capacity }}, '{{ table.photo }}')">
+                </div>
+                {% endfor %}
+                <div class="windows-up">
+                    <div class="wu1"></div>
+                    <div class="wu3"></div>
+                    <div class="wu2"></div>
+                </div>
+                <div class="windows-right">
+                    <div class="wr1"></div>
+                    <div class="wr2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab">
+        <div class="steps">
+            <span class="step don"><p class="step__text">1</p></span>
+            <hr size="3">
+            <span class="step don"><p class="step__text">2</p></span>
+        </div>
+        {% csrf_token %}
+        <input type="hidden" name="table" id="selectedTableId">
+        <input type="hidden" name="user" value="{{ user.id }}">
+        <div class="pers-inf-cont">
+            <div class="inputs">
+                {{ reservation_form.name.label_tag }}
+                {{ reservation_form.name }}
+
+                {{ reservation_form.phone.label_tag }}
+                {{ reservation_form.phone }}
+
+                {{ reservation_form.additional_info.label_tag }}
+                {{ reservation_form.additional_info }}
+            </div>
+            <div class="btns-modal">
+                <button type="submit" class="button">Бронировать</button>
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="button">Назад</button>
+            </div>
+        </div>
+    </div>
+</form>
+<!--Форма выбора стола-->
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'main/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'restaurants/js/reservation.js' %}"></script>
+{% endblock %}
