@@ -1,0 +1,27 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load profile_filters %}
+
+{% block title %}{{ restaurant.name }} | Редактор карты{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/profile_rest.css' %}">
+<link rel="stylesheet" href="{% static 'restaurants/css/review_create.css' %}">{% endblock %}
+
+{% block content %}
+<p style="margin-top:40px;">В фото нужно отправить планировку вашего заведения, а также пронумеровать графически
+    ваши столики, отобразить ключевые зоны, которые должны отображаться у клиента при бронировании, такие как кухня,
+    бар, уборная и т.п.</p>
+<p style="margin:10px 0;">Процесс добавления вашей карты будет от 1 до 3 дней, так как зависит от количества
+    объектов в вашей карте.</p>
+<form method="post" enctype="multipart/form-data" id="tableCreationForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div id="tableFields"></div>
+    <button style="margin:10px 0;" class="rest-profile-btn full" type="submit">Отправить</button>
+</form>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'restaurants/js/map_update.js' %}"></script>
+{% endblock %}

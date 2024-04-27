@@ -1,0 +1,65 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% load profile_filters %}
+
+{% block title %}{{ restaurant.name }} | Статистика{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'restaurants/css/profile_rest.css' %}">
+<link rel="stylesheet" href="{% static 'restaurants/css/review_create.css' %}">{% endblock %}
+
+{% block content %}
+<div class="profile-rest">
+    <a class="rest-profile-btn full" href="{% url 'restaurants:my-rests' %}" style='margin: 40px 0;'>Мои рестораны</a>
+    {% if option %}
+    <h1>{{ option }} {{ value }}</h1>
+    {% else %}
+    <h1>Статистика по бронированиям</h1>
+    {% endif %}
+    <h2>{{ restaurant.type }} {{ restaurant.name }}</h2>
+    <h3>По бронированиям</h3>
+    <p>Всего бронирований: {{ reservations_count }}</p>
+    <p>Успешных: {{ reservation_success }}</p>
+    <p>Отменненных: {{ reservation_cancelled }}</p>
+    <h3>По отзывам</h3>
+    <p>Количество созданных отзывов: {{ reviews_count }}</p>
+    <p>Средний рейтинг: {% if average_rating %}{{ average_rating|floatformat:1 }}{% else %}Нет данных{% endif %}</p>
+    <div>
+        <h4>Фильтр по дням, месяцам и годам</h4>
+        <form id="statisticsForm" method="get" action="{% url 'restaurants:statistics' restaurant.name restaurant.pk %}">
+            <label for="option">Выберите фильтр:</label>
+            <select id="option" name="option" onchange="showForm(this.value)">
+                <option value="">Фильтры</option>
+                <option value="day">По дням</option>
+                <option value="month">По месяцам</option>
+                <option value="year">По годам</option>
+            </select>
+
+            <div id="dayForm" style="display: none;">
+                <label for="day">По дням:</label>
+                <input type="date" id="day" name="day" onchange="handleChange()">
+            </div>
+
+            <div id="monthForm" style="display: none;">
+                <label for="month">По месяцам:</label>
+                <input type="month" id="month" name="month" onchange="handleChange()">
+            </div>
+
+            <div id="yearForm" style="display: none;">
+                <label for="year">По годам:</label>
+                <select id="year" name="year" onchange="handleChange()">
+                    <option value="">- - - -</option>
+                    {% for y in years %}
+                    <option value="{{ y }}">{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <a class="rest-profile-btn full" href="{% url 'restaurants:statistics' restaurant.name restaurant.pk %}" style="width:20%; margin: 20px 0">За все время</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'restaurants/js/statistics.js' %}"></script>
+{% endblock %}

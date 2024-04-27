@@ -22,13 +22,13 @@ body, html{
     display: block;
 
 }
-.messages{
+.messages {
     padding: 20px 5px;
     position: absolute;
     background-color: #dfe;
     border-radius: 8px;
     z-index: 9999;
-    opacity: 90%;
+    opacity: 100%; /* Начать с полной непрозрачности */
     width: 33%;
     left: 33%;
     /* Анимация для постепенного уменьшения opacity и скрытия */
@@ -40,9 +40,10 @@ body, html{
 
 /* Ключевые кадры анимации */
 @keyframes fadeOut {
-    0% { opacity: 90%; }
-    100% { opacity: 0; display: none; }
+    50% { opacity: 100%; } /* Начать с полной непрозрачности */
+    to { opacity: 0; display: none; } /* Постепенно стать непрозрачным и скрыться */
 }
+
 
 /* header start */
 .container{

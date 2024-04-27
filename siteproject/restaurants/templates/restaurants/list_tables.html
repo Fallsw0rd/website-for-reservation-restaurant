@@ -67,6 +67,16 @@
                 type: 'POST',
                 data: {
                     csrfmiddlewaretoken: csrfToken,
+                },
+                success: function (data) {
+                    if (data.status === 'success') {
+                        location.reload();
+                    } else {
+                        alert('Ошибка при подтверждении бронирования.');
+                    }
+                },
+                error: function () {
+                    alert('Ошибка при отправке запроса.');
                 }
             });
         });

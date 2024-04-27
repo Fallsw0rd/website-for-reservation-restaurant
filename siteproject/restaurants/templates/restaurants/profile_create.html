@@ -60,7 +60,7 @@
                 <div class="background-img">
                     <img alt="" class="backg-img"
                          id="preview-image-main"
-                         src="{% if form.restaurant_image.value %} /media/{{ form.restaurant_image.value }} {% endif %}">
+                         src="{% if form.restaurant_image.value %}/media/{{ form.restaurant_image.value }}{% endif %}">
                 </div>
             </div>
             {{ form.restaurant_image }}
@@ -69,13 +69,13 @@
                 <div class="img-gal">
                     <img alt=""
                          id="preview-image-1"
-                         src="{% if form.photo_1.value %} /media/{{ form.photo_1.value }} {% endif %}">
+                         src="{% if form.photo_1.value %}/media/{{ form.photo_1.value }}{% endif %}">
                     <img alt=""
                          id="preview-image-2"
-                         src="{% if form.photo_2.value %} /media/{{ form.photo_2.value }} {% endif %}">
+                         src="{% if form.photo_2.value %}/media/{{ form.photo_2.value }}{% endif %}">
                     <img alt=""
                          id="preview-image-3"
-                         src="{% if form.photo_3.value %} /media/{{ form.photo_3.value }} {% endif %}">
+                         src="{% if form.photo_3.value %}/media/{{ form.photo_3.value }}{% endif %}">
                 </div>
                 {{ form.photo_1 }}<hr>
                 {{ form.photo_2 }}<hr>
@@ -93,6 +93,7 @@
                     <li><p>СБ {{ work_time_form.saturday_opening_time}}-{{ work_time_form.saturday_closing_time}}</p></li>
                     <li><p>ВС {{ work_time_form.sunday_opening_time}}-{{ work_time_form.sunday_closing_time}}</p></li>
                 </ul>
+                {{ work_time_form.restaurant }}
             </div>
         </div>
         <input id="button" type="submit" value="Сохранить">

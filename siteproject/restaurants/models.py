@@ -56,9 +56,9 @@ class Type(models.Model):
 class Restaurant(models.Model):
     name = models.CharField('Название ресторана', max_length=255)
     address = models.CharField('Адрес ресторана', max_length=255)
-    contact_number = models.CharField('Контактный номер', max_length=11, blank=True, null=True, unique=True)
-    min_average_check = models.PositiveIntegerField()
-    max_average_check = models.PositiveIntegerField()
+    contact_number = models.CharField('Контактный номер', max_length=11, blank=True, null=True)
+    min_average_check = models.PositiveIntegerField('Минимальный средний чек')
+    max_average_check = models.PositiveIntegerField('Максимальный средний чек')
 
     description = models.TextField("Описание")
 
@@ -178,3 +178,29 @@ class Review(models.Model):
 
     def __str__(self):
         return f'{self.restaurant.name} - {self.reviewer_name}'
+
+
+class MapAdditionRequest(models.Model):
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='Map_photo/')
+
+    class Meta:
+        verbose_name = 'Заявка на редактирование карты'
+        verbose_name_plural = 'Заявки на редактирование карты'
+
+    def __str__(self):
+        return f"Заявка на редактирование карты для ресторана {self.restaurant.name}"
+
+
+class TableAdditionRequest(models.Model):
+    map_request = models.ForeignKey(MapAdditionRequest, on_delete=models.CASCADE, related_name='tablerequests')
+    number = models.CharField(max_length=100)
+    capacity = models.IntegerField()
+    photo = models.ImageField(upload_to='table_photos/')
+
+    class Meta:
+        verbose_name = 'Стол для редактирование карты'
+        verbose_name_plural = 'Столы для редактирование карты'
+
+    def __str__(self):
+        return f"Заявка на добавление стола с номером {self.number} для карты {self.map_request}"

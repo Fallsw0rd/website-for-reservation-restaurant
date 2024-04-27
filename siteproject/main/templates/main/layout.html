@@ -43,9 +43,19 @@
                     <a class="nav-item" href="{% url 'restaurants' %}">Рестораны</a><a class="nav-item" href="{% url 'publications' %}">Блог</a><a class="nav-item" href="{% url 'about' %}">О нас</a>
                 </nav>
                 <div class="profiles">
-                    {% if user.is_authenticated and user.is_staff %}
-                    <a class="rest-profile-btn full" href="{% url 'restaurants:create' %}">+Создать ресторан</a>
-                    <a class="rest-profile-btn abbrev" href="{% url 'restaurants:create' %}">+</a>
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                            <a class="rest-profile-btn full" href="{% url 'restaurants:create' %}">+Создать ресторан</a>
+                            <a class="rest-profile-btn abbrev" href="{% url 'restaurants:create' %}">+</a>
+                        {% endif %}
+                        {% if user_belongs_to_owners_group %}
+                            {% if user_has_restaurant %}
+                            <a class="rest-profile-btn full" href="{% url 'restaurants:create' %}">+Создать ресторан</a>
+                            <a class="rest-profile-btn abbrev" href="{% url 'restaurants:create' %}">+</a>
+                            {% else %}
+                            <a class="rest-profile-btn full" href="{% url 'restaurants:my-rests' %}">Мои рестораны</a>
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
                     <div class="profile">
                         <a class="img-profile" href="{% url 'profile' %}"><img

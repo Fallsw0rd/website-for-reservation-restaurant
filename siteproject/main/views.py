@@ -18,6 +18,10 @@ from .filters import RestaurantFilter
 def index(request):
     popular_restaurants = Restaurant.objects.annotate(average_rating=models.Avg('review__rating')).order_by(
         '-average_rating')[:9]
+    user_belongs_to_owners_group = request.user.groups.filter(name='Владельцы').exists()
+    user_has_restaurant = False
+    if request.user.is_authenticated:
+        user_has_restaurant = not request.user.restaurant_set.exists()
     publications = Publication.objects.all()
     current_day_of_week = datetime.now().strftime('%A')
 
@@ -49,6 +53,8 @@ def index(request):
     context = {
         'popular_restaurants': popular_restaurants,
         'publications': publications,
+        'user_has_restaurant': user_has_restaurant,
+        'user_belongs_to_owners_group': user_belongs_to_owners_group,
     }
 
     return render(request, 'main/index.html', context)

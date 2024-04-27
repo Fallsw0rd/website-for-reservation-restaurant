@@ -1,5 +1,5 @@
 from django import forms
-from .models import Restaurant, Kitchen, WorkTime, VisitPurpose, Feature, District, Type, Reservation, Review
+from .models import Restaurant, Kitchen, WorkTime, VisitPurpose, Feature, District, Type, Reservation, Review, Table
 from datetime import datetime, timedelta, date
 
 
@@ -43,7 +43,7 @@ class WorkTimeForm(forms.ModelForm):
             'thursday_opening_time', 'thursday_closing_time',
             'friday_opening_time', 'friday_closing_time',
             'saturday_opening_time', 'saturday_closing_time',
-            'sunday_opening_time', 'sunday_closing_time',
+            'sunday_opening_time', 'sunday_closing_time'
         ]
         widgets = {
             'monday_opening_time': forms.TimeInput(format='%H:%M', attrs={'type': 'time'}),
@@ -85,13 +85,7 @@ class RestaurantForm(forms.ModelForm):
         fields = ['name', 'address', 'contact_number', 'description',
                   'restaurant_image', 'photo_1', 'photo_2', 'photo_3',
                   'min_average_check', 'max_average_check', 'district', 'features', 'visit_purposes', 'type',
-                  'kitchens', 'owner']
-
-    def clean_contact_number(self):
-        contact_number = self.cleaned_data['contact_number']
-        if Restaurant.objects.filter(contact_number=contact_number).exists():
-            raise forms.ValidationError("Ресторан с таким контактным номером уже существует.")
-        return contact_number
+                  'kitchens']
 
 
 class FilterCheckForm(forms.Form):
@@ -137,7 +131,8 @@ class ReservationForm(forms.ModelForm):
         current_datetime = datetime.combine(datetime.strptime(selected_date, '%Y-%m-%d'), opening_time)
 
         if closing_time < opening_time:
-            closing_time = datetime.combine(datetime.strptime(selected_date, '%Y-%m-%d') + timedelta(days=1), closing_time)
+            closing_time = datetime.combine(datetime.strptime(selected_date, '%Y-%m-%d') + timedelta(days=1),
+                                            closing_time)
 
             while current_datetime < closing_time:
                 choices.append((current_datetime.strftime('%H:%M'), current_datetime.strftime('%H:%M')))
@@ -161,7 +156,7 @@ class ReservationForm(forms.ModelForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['reviewer_name', 'comment', 'rating', 'user']
+        fields = ['reviewer_name', 'comment', 'rating']
 
     RATING_CHOICES = [(i, int(i)) for i in range(1, 6)]  # Опции рейтинга от 1 до 5
 
@@ -176,3 +171,17 @@ class ReviewForm(forms.ModelForm):
         super(ReviewForm, self).__init__(*args, **kwargs)
         if user:
             self.fields['reviewer_name'].initial = f'{user.name} {user.surname}'
+
+
+class TableCreationForm(forms.Form):
+    photo = forms.ImageField(label='Фотография')
+    num_tables = forms.IntegerField(label='Количество столов', min_value=1, max_value=10)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'num_tables' in self.data:
+            num_tables = int(self.data['num_tables'])
+            for i in range(num_tables):
+                self.fields[f'number_{i}'] = forms.CharField(label=f'Номер стола {i + 1}')
+                self.fields[f'capacity_{i}'] = forms.IntegerField(label=f'Вместимость стола {i + 1}')
+                self.fields[f'photo_{i}'] = forms.ImageField(label=f'Фотография стола {i + 1}')

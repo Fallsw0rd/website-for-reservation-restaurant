@@ -1,0 +1,55 @@
+{% extends 'main/layout.html' %}
+{% load static %}
+{% block title %}Мои рестораны{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<section class="popular-restaurant">
+    <div class="content-container">
+        <h2 class="main-title">Мои рестораны</h2>
+        <div class="content-wrapper">
+            {% if restaurants %}
+            <div class="content-block">
+                {% for rest in restaurants %}
+                <div class="content-item">
+                    <div class="content-content">
+                        <a href="{% url 'restaurants:profile-rest' name=rest.name pk=rest.pk %}">
+                            {% if rest.restaurant_image %}
+                                <img src="{{ rest.restaurant_image.url }}" alt="Restaurant Image">
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="rest-info">
+                        <a href="{% url 'restaurants:update' name=rest.name pk=rest.pk %}" class="rest-title">{{ rest.name }}</a>
+                        <p class="rest-info-text">{{ rest.address }}</p>
+                        <div class="rest-kitchen">
+                            <img class="kitchen-icon" src="{% static 'main/img/content/kitchen-icon.png' %}" alt="">
+                            <p class="kitchen-text"> {% for kitchen in rest.kitchens.all %} {{ kitchen.name }}{% if not forloop.last %},{% endif %} {% endfor %} </p>
+                        </div>
+                        <p class="rest-info-text">Средний чек: {{ rest.min_average_check }}-{{ rest.max_average_check }} руб.</p>
+                        {% if rest.opening_time and rest.closing_time %}
+                        <p class="rest-info-text">Время работы: {{ rest.opening_time|time:"H:i" }} - {{ rest.closing_time|time:"H:i" }}</p>
+                        {% else %}
+                        <p class="rest-info-text">Время работы не указано</p>
+                        {% endif %}
+                    </div>
+                    <div class="rest-btn">
+                        <a class="rest-button" href="{% url 'restaurants:statistics' name=rest.name pk=rest.id %}">Статистика</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %} <h3>Ресторанов нет.</h3>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block script %}
+
+{% endblock %}
